@@ -1,0 +1,120 @@
+1. a. Give an example of an algorithm that should not be considered an application of the brute-force approach : divive and conquer , binary sort ,  and so on.
+b. Give an example of a problem that cannot be solved by a brute-force
+algorithm :  The halting problem  
+2. a. What is the time efficiency of the brute-force algorithm for computing a^n 
+as a function of n? As a function of the number of bits in the binary
+representation of n : the efficieny is o(n) and o(2^k) with k representatively bits
+b. If you are to compute a^n mod m where a > 1 and n is a large positive integer,
+how would you circumvent the problem of a very large magnitude of an : 
+#(algorithm  "Exponentiation by Squaring") 
+  long long powerMod(long long a, long long n, long long m) {
+    long long result = 1;
+    a = a % m;
+    while (n > 0) {
+        if (n % 2 == 1)
+            result = (result * a) % m;
+        a = (a * a) % m;
+        n /= 2;
+    }
+    return result;
+}
+4. a. Design a brute-force algorithm for computing the value of a polynomial at a given point x0 and determine its worst-case efficiency class
+  int x ;
+  cin >> x;
+  float a[n];
+  long expo = 1;
+  long result = a[0];
+  for (int i = 1 ; i <= n ; i++){
+   expo *= x;
+   result += a[i]*expo;
+   }
+   Horner’s method:
+   float result = a[n];
+    for (int i = n-1; i >= 0; i--) {
+      result = result * x + a[i];
+  }
+  b. If the algorithm you designed is in (n2), design a linear algorithm for this 
+  problem.
+  c. Is it possible to design an algorithm with a better-than-linear efficiency for
+  this problem : No , requiring looking at all the coefficients 
+5. You are given a boolean matrix A[0..n − 1, 0..n − 1], where n > 3, which is
+supposed to be the adjacency matrix of a graph modeling a network with one
+of these topologies. Your task is to determine which of these three topologies,
+if any, the matrix represents. Design a brute-force algorithm for this task and
+indicate its time efficiency class.
+You are given a boolean matrix A[0..n − 1, 0..n − 1], where n > 3, which is
+supposed to be the adjacency matrix of a graph modeling a network with one
+of these topologies. Your task is to determine which of these three topologies,
+if any, the matrix represents. Design a brute-force algorithm for this task and
+indicate its time efficiency class.
+Giải:
+
+// ring topology -> degree of each a[i] is 2 
+// start topology -> existing a one element a[i] has a (n-1) degree , reamaining elements having a one degree
+// full connected mesh -> all of elemens have a (n-1) degree
+vector<int> degrees;
+for (int i = 0 ; i < n ; i++){
+  int degree = 0 ;
+  for (int j = 0 ; j < n ; j++){
+    if (a[i][j]) degree ++;
+  degrees.push_back(degree);
+  }
+}
+
+string isTopologies(vector<int> &degrees , int n ){
+  int ring = 0, star1 = 0, star2 = 0, mesh = 0;
+  for (int degree : degrees){
+    if(degree == 2) ring++;
+    if(degree == n-1) mesh++;
+    if(degree == n-1) star1++;
+    if(degree == 1) star2++;
+  }
+  if(ring == n) return "Ring";
+  if(star1 == 1 && star2 == n - 1) return "Star";
+  if(mesh == n) return "Fully connected mesh";
+  return "Unknown";
+}
+
+-> the efficency of algorithm is o(n^2)
+7. A stack of fake coins There are n stacks of n identical-looking coins. All of
+the coins in one of these stacks are counterfeit, while all the coins in the other
+stacks are genuine. Every genuine coin weighs 10 grams; every fake weighs
+11 grams. You have an analytical scale that can determine the exact weight of
+any number of coins.
+a. Devise a brute-force algorithm to identify the stack with the fake coins and
+determine its worst-case efficiency class : 
+for (int i=0; i<n; i++){
+  if (scale(stack[i]) % 10 != 0)
+    return i;
+}
+
+  -> the efficency of strategy is 0(n)
+
+b. What is the minimum number of weighings needed to identify the stack
+with the fake coins? 1 
+  - > selecting each of stacks equally its idx -> total_weight - (10*n(n+1)/2) => the fake stack's idx.
+14 . Alternating disks You have a row of 2n disks of two colors, n dark and n light.
+They alternate: dark, light, dark, light, and so on. You want to get all the dark
+disks to the right-hand end, and all the light disks to the left-hand end. The
+only moves you are allowed to make are those that interchange the positions
+of two neighboring disks.
+// devise 
+// input 0 is dark , 1 is white , example : 01010101 
+vector<int> mark;
+vector<int> result;
+for (int i = 0 ; i < n ; i++){
+  if (a[i] == 1) result.push_back(i);
+  else mark.push_back(i);
+}
+for (int m : mark){
+  result.push_back(m);
+}
+// brute force 
+for (int pass = 0; pass < n; pass++) {
+  for (int i = 0; i < 2*n - 1; i++) {
+    if (disks[i] == 0 && disks[i+1] == 1) {
+      swap(disks[i], disks[i+1]);
+    }
+  }
+}
+
