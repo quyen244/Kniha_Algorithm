@@ -1,0 +1,95 @@
+Excercise 3.2 
+11. Word Find A popular diversion in the United States, “word find” (or “word
+search”) puzzles ask the player to find each of a given set of words in a square
+table filled with single letters. A word can read horizontally (left or right),
+vertically (up or down), or along a 45 degree diagonal (in any of the four
+directions) formed by consecutively adjacent cells of the table; it may wrap
+around the table’s boundaries, but it must read in the same direction with no
+zigzagging. The same cell of the table may be used in different words, but, in a
+given word, the same cell may be used no more than once. Write a computer
+program for solving this puzzle.
+// answer 
+#include <iostream>
+#include <vector> 
+#include <string>
+#include <unordered_set>
+using namespace std;
+
+vector<vector<char>> matrix = {
+    {'A', 'B', 'C', 'D'},
+    {'E', 'F', 'G', 'H'},
+    {'I', 'J', 'K', 'L'},
+    {'M', 'N', 'O', 'P'}
+};
+
+int n, m; // global variables;
+unordered_set<string> words =  {"ABCD", "CFIL", "AFCJ", "DHL", "MIEA"};
+unordered_set<string> results;
+
+vector<pair<int , int>> drec = {
+    {-1 , 0} , {1 , 0} , {0 , -1} , {0 , 1}, // up, down, left, right 
+    {-1 , -1} , {-1 , 1} , {1 , 1} , {1 , -1} // 1 , 2 , 3 , 4 
+};
+
+void dfs(int x , int y , int dx , int dy , vector<vector<bool>> &visited , int depth , string tmp , int maxL){
+    if (depth > maxL) return;
+    // mark
+    visited[x][y] = true;
+    // found 
+    if (words.count(tmp)) {
+        results.insert(tmp);
+    }
+    // wrap-around 
+    int xnew = (x + dx + n) % n;
+    int ynew = (y + dy + m) % m;
+    // go 
+    if (!visited[xnew][ynew]) {
+        dfs(xnew, ynew, dx, dy, visited, depth + 1, tmp + matrix[xnew][ynew], maxL);
+    }
+}
+
+int main() {
+    n = matrix.size();
+    m = matrix[0].size();
+    
+    int maxL = 0;
+    
+    for (auto &w : words) {
+        if (maxL < w.length()) maxL = w.length();
+    }
+
+    for (int i = 0 ; i < n ; i++) {
+        for (int j = 0 ; j < m ; j++) {
+            // iterate over each of the directions
+            for (auto [dx , dy] : drec) {
+                string tmp = "";
+                tmp += matrix[i][j];
+                vector<vector<bool>> visited(n, vector<bool>(m, false));
+                dfs(i, j, dx, dy, visited, 1, tmp, maxL);
+            }
+        }
+    }
+    // show 
+    for (const auto &w : results) {
+        cout << w << endl;
+    }
+
+    return 0;
+}
+12. Battleship game Write a program based on a version of brute-force pattern
+matching for playing the game Battleship on the computer. The rules of the
+game are as follows. There are two opponents in the game (in this case,
+a human player and the computer). The game is played on two identical
+boards (10 × 10 tables of squares) on which each opponent places his or her
+ships, not seen by the opponent. Each player has five ships, each of which
+occupies a certain number of squares on the board: a destroyer (two squares),
+a submarine (three squares), a cruiser (three squares), a battleship (four
+squares), and an aircraft carrier (five squares). Each ship is placed either
+horizontally or vertically, with no two ships touching each other. The game
+is played by the opponents taking turns “shooting” at each other’s ships. The  
+result of every shot is displayed as either a hit or a miss. In case of a hit, the
+player gets to go again and keeps playing until missing. The goal is to sink all
+the opponent’s ships before the opponent succeeds in doing it first. To sink a
+ship, all squares occupied by the ship must be hit.
+
+
