@@ -1,0 +1,103 @@
+//  Traveling Salesman Problem
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int tmp = 0;
+
+void backtrack(int start, vector<vector<int>> &costs, int n, vector<bool> &visited, int steps, int total) {
+    if (steps == n) {
+        total += costs[start][0];
+        if (total < tmp) tmp = total;  
+        return;
+    }
+    for (int i = 0; i < n; i++) {
+        if (!visited[i]) {
+            //  int nextCost = currCost + cost[currCity][i];  Branch and Bound strategy 
+            // if (nextCost >= minCost) continue;
+            visited[i] = true;
+            backtrack(i, costs, n, visited, steps + 1, total + costs[start][i]);
+            visited[i] = false;
+        }
+    }
+}
+
+int main() {
+    int n = 4;
+    vector<vector<int>> costs = {
+        {0, 2, 5, 7},
+        {2, 0, 8, 3},
+        {5, 8, 0, 1},
+        {7, 3, 1, 0},
+    };
+    
+    vector<bool> visited(n, false);
+    visited[0] = true;  // start at the first city 
+    backtrack(0, costs, n, visited, 1, 0);
+
+
+// Knapsack problem 
+
+#include <iostream>
+#include <vector>
+using namespace std;
+int result = 0 ;
+
+void solu(vector<int> & value  , vector<int> &w , int capa , vector<bool> &visited , int currw , int currv ,  int n){
+    if (currw >= capa){
+        return ;
+    }
+    result = max(result , currv);
+    for (int i = 0 ; i < n ; i++ ){
+        if (!visited[i]){
+            visited[i] = true;
+            solu(value , w , capa , visited , currw + w[i] , currv + value[i], n);
+            visited[i] = false;
+        }
+    }
+}
+int main() {
+    int capa = 10;
+    vector<int> value = { 42 , 12 , 40 , 25 };
+    vector<int> w = { 7 , 3 , 4 , 5 };
+    vector<bool> visited(4 , false);
+    solu(value , w , capa , visited , 0 , 0 , 4);
+    
+    cout << result;
+}
+
+    cout << tmp;
+    return 0;
+}
+// dp 
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int knapsackDP(int capacity, vector<int>& weights, vector<int>& values) {
+    int n = weights.size();
+    vector<vector<int>> dp(n + 1, vector<int>(capacity + 1, 0));
+
+    // i: số lượng món, w: dung lượng còn lại
+    for (int i = 1; i <= n; i++) {
+        for (int w = 0; w <= capacity; w++) {
+            dp[i][w] = dp[i-1][w];  // Không chọn món i
+            if (w >= weights[i-1]) {
+                dp[i][w] = max(dp[i][w], dp[i-1][w - weights[i-1]] + values[i-1]); // Chọn món i
+            }
+        }
+    }
+
+    return dp[n][capacity]; // Giá trị lớn nhất khi dùng tất cả món và đầy balo
+}
+
+int main() {
+    int capacity = 10;
+    vector<int> values = {42, 12, 40, 25};
+    vector<int> weights = {7, 3, 4, 5};
+
+    int maxValue = knapsackDP(capacity, weights, values);
+    cout << "Max value (DP): " << maxValue << endl;
+
+    return 0;
+}
